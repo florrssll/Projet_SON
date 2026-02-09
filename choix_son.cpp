@@ -10,7 +10,7 @@ AudioOutputI2S           audioOutput;
 AudioConnection           patchCord1(playWav, 0, faustEffect, 0);
 AudioConnection           patchCord2(faustEffect, 0, audioOutput, 0);
 
-const char* sons[] = {"son1.wav", "son2.wav", "son3.wav"};
+const char* sons[] = {"drums-bass.wav", "son2.wav", "son3.wav"};
 int indexSon = 0;
 
 void setup() {
