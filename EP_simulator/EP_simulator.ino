@@ -1,59 +1,74 @@
 #include <Audio.h>
 #include <Wire.h>
 #include <SPI.h>
-#include <SD.h>
-#include <SerialFlash.h>
+#include <Bounce.h>
 
-// Inclusion du fichier généré par Faust
-#include "mydsp.h" 
+#include "code_faust.h"   // DSP Faust Teensy
 
-// 1. Création des composants de la chaîne audio
-AudioInputI2S            lineIn;         
-faust_ep                 myEP;           // Ton moteur Faust
-AudioOutputI2S           headphones;      
-AudioControlSGTL5000     sgtl5000;       
+// ---------------- AUDIO OBJECTS ----------------
+AudioInputUSB        usbIn;
+code_faust           faustEP;   // ← PLUS mydsp
+AudioOutputI2S       i2sOut;
+AudioControlSGTL5000 sgtl5000;
 
-// 2. Connexions (Patch Bay)
-// On connecte l'entrée gauche au moteur Faust, puis le moteur aux deux oreilles
-AudioConnection          patch1(lineIn, 0, myEP, 0); 
-AudioConnection          patch2(myEP, 0, headphones, 0);
-AudioConnection          patch3(myEP, 0, headphones, 1);
+// -------------- AUDIO PATCH CORDS --------------
+AudioMixer4 monoMix;
+
+AudioConnection patch1(usbIn, 0, monoMix, 0);
+AudioConnection patch2(usbIn, 1, monoMix, 1);
+AudioConnection patch3(monoMix, 0, faustEP, 0);
+AudioConnection patch4(faustEP, 0, i2sOut, 0);
+AudioConnection patch5(faustEP, 0, i2sOut, 1);
+
+// ------------------- UI -------------------
+constexpr int PIN_BYPASS = 0;
+Bounce bypassBtn(PIN_BYPASS, 10);
+
+static inline float adcNorm(uint16_t v, uint16_t maxv) {
+  return (float)v / (float)maxv;
+}
 
 void setup() {
-  Serial.begin(9600);
-  
-  // 3. Initialisation de la mémoire et du shield
-  AudioMemory(20); // Alloue de la mémoire pour les délais (Wow)
+  Serial.begin(115200);
+  AudioMemory(40);
+
+  // Audio Shield
   sgtl5000.enable();
-  sgtl5000.volume(0.6); // Volume général de sortie
-  sgtl5000.inputSelect(AUDIO_INPUT_LINEIN); // Sélectionne l'entrée Line-In
-  
-  // Configuration des boutons
-  pinMode(0, INPUT_PULLUP); // Bouton Bypass
+  sgtl5000.volume(0.6);
+
+  // Mix L/R USB → mono
+  monoMix.gain(0, 0.5);
+  monoMix.gain(1, 0.5);
+
+  pinMode(PIN_BYPASS, INPUT_PULLUP);
+  analogReadResolution(12);
+
+  // Valeurs initiales
+  faustEP.setParamValue("Wear", 1.0f);
+  faustEP.setParamValue("Noise", 0.05f);
+  faustEP.setParamValue("Bypass", 0.0f);
+
+  sgtl5000.volume(0.9);
+  sgtl5000.lineOutLevel(29);
+
 }
 
 void loop() {
-  // --- LECTURE DU POTENTIOMÈTRE 1 (WEAR) ---
-  // On lit A0, on normalise (0.0 à 1.0)
-  float wearVal = analogRead(A0) / 1023.0;
-  // On envoie à Faust (le nom "Wear" doit être identique au hslider Faust)
-  myEP.setParamValue("Wear", wearVal);
+  bypassBtn.update();
 
-  // --- LECTURE DU POTENTIOMÈTRE 2 (NOISE) ---
-  // On lit A2, on normalise
-  float noiseVal = analogRead(A2) / 1023.0;
-  myEP.setParamValue("Noise", noiseVal);
+  const uint16_t ADC_MAX = 4095;
 
-  // --- LECTURE DU BOUTON (BYPASS) ---
-  // Rappel : INPUT_PULLUP inverse la logique (LOW = pressé)
-  int bypassState = (digitalRead(0) == LOW) ? 1 : 0;
-  myEP.setParamValue("Bypass", bypassState);
+  // Pot A0 → Wear
+  float wearVal = adcNorm(analogRead(A0), ADC_MAX);
+  faustEP.setParamValue("Wear", wearVal);
 
-  // --- OPTIONNEL : DEBUG DANS LA CONSOLE ---
-  /*
-  Serial.print("Wear: "); Serial.print(wearVal);
-  Serial.print(" | Noise: "); Serial.println(noiseVal);
-  */
+  // Pot A2 → Noise
+  float noiseVal = adcNorm(analogRead(A2), ADC_MAX) * 0.3f;
+  faustEP.setParamValue("Noise", noiseVal);
 
-  delay(10); // Petite pause pour la stabilité des lectures analogiques
+  // Bouton → Bypass
+  int bypassState = (digitalRead(PIN_BYPASS) == LOW) ? 1 : 0;
+  faustEP.setParamValue("Bypass", (float)bypassState);
+
+  delay(5);
 }

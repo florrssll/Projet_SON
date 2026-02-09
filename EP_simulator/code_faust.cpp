@@ -1,5 +1,5 @@
 /* ------------------------------------------------------------
-name: "premiere_version"
+name: "code_faust"
 Code generated with Faust 2.81.10 (https://faust.grame.fr)
 Compilation options: -a /usr/local/share/faust/teensy/teensy.cpp -lang cpp -i -ct 1 -es 1 -mcd 16 -mdd 1024 -mdy 33 -uim -single -ftz 0
 ------------------------------------------------------------ */
@@ -44,7 +44,7 @@ Compilation options: -a /usr/local/share/faust/teensy/teensy.cpp -lang cpp -i -c
 
 #include <string.h> // for memset
 
-#include "premiere_version.h"
+#include "code_faust.h"
 
 // IMPORTANT: in order for MapUI to work, the teensy linker must be g++
 /************************** BEGIN MapUI.h ******************************
@@ -10401,7 +10401,7 @@ struct mydsp : public dsp {
 		m->declare("compile_options", "-a /usr/local/share/faust/teensy/teensy.cpp -lang cpp -i -ct 1 -es 1 -mcd 16 -mdd 1024 -mdy 33 -uim -single -ftz 0");
 		m->declare("delays.lib/name", "Faust Delay Library");
 		m->declare("delays.lib/version", "1.2.0");
-		m->declare("filename", "premiere_version.dsp");
+		m->declare("filename", "code_faust.dsp");
 		m->declare("filters.lib/fir:author", "Julius O. Smith III");
 		m->declare("filters.lib/fir:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
 		m->declare("filters.lib/fir:license", "MIT-style STK-4.3 license");
@@ -10426,7 +10426,7 @@ struct mydsp : public dsp {
 		m->declare("maths.lib/license", "LGPL with exception");
 		m->declare("maths.lib/name", "Faust Math Library");
 		m->declare("maths.lib/version", "2.9.0");
-		m->declare("name", "premiere_version");
+		m->declare("name", "code_faust");
 		m->declare("noises.lib/name", "Faust Noise Generator Library");
 		m->declare("noises.lib/version", "1.5.0");
 		m->declare("oscillators.lib/name", "Faust Oscillator Library");
@@ -10514,7 +10514,7 @@ struct mydsp : public dsp {
 	}
 	
 	virtual void buildUserInterface(UI* ui_interface) {
-		ui_interface->openVerticalBox("premiere_version");
+		ui_interface->openVerticalBox("code_faust");
 		ui_interface->addCheckButton("Bypass", &fCheckbox0);
 		ui_interface->addHorizontalSlider("Noise", &fHslider0, FAUSTFLOAT(0.05f), FAUSTFLOAT(0.0f), FAUSTFLOAT(0.3f), FAUSTFLOAT(0.01f));
 		ui_interface->addHorizontalSlider("Wear", &fHslider1, FAUSTFLOAT(1.0f), FAUSTFLOAT(0.0f), FAUSTFLOAT(1.0f), FAUSTFLOAT(0.01f));
@@ -10560,7 +10560,7 @@ struct mydsp : public dsp {
 
 #ifdef FAUST_UIMACROS
 	
-	#define FAUST_FILE_NAME "premiere_version.dsp"
+	#define FAUST_FILE_NAME "code_faust.dsp"
 	#define FAUST_CLASS_NAME "mydsp"
 	#define FAUST_COMPILATION_OPIONS "-a /usr/local/share/faust/teensy/teensy.cpp -lang cpp -i -ct 1 -es 1 -mcd 16 -mdd 1024 -mdy 33 -uim -single -ftz 0"
 	#define FAUST_INPUTS 1
@@ -10597,7 +10597,7 @@ std::list<GUI*> GUI::fGuiList;
 ztimedmap GUI::gTimedZoneMap;
 #endif
 
-premiere_version::premiere_version() : AudioStream(FAUST_INPUTS, new audio_block_t*[FAUST_INPUTS])
+code_faust::code_faust() : AudioStream(FAUST_INPUTS, new audio_block_t*[FAUST_INPUTS])
 {
 #ifdef NVOICES
     int nvoices = NVOICES;
@@ -10639,7 +10639,7 @@ premiere_version::premiere_version() : AudioStream(FAUST_INPUTS, new audio_block
 #endif
 }
 
-premiere_version::~premiere_version()
+code_faust::~code_faust()
 {
     delete fDSP;
     delete fUI;
@@ -10658,7 +10658,7 @@ premiere_version::~premiere_version()
 }
 
 template <int INPUTS, int OUTPUTS>
-void premiere_version::updateImp(void)
+void code_faust::updateImp(void)
 {
 #if MIDICTRL
     // Process the MIDI messages received by the Teensy
@@ -10699,14 +10699,14 @@ void premiere_version::updateImp(void)
     }
 }
 
-void premiere_version::update(void) { updateImp<FAUST_INPUTS, FAUST_OUTPUTS>(); }
+void code_faust::update(void) { updateImp<FAUST_INPUTS, FAUST_OUTPUTS>(); }
 
-void premiere_version::setParamValue(const std::string& path, float value)
+void code_faust::setParamValue(const std::string& path, float value)
 {
     fUI->setParamValue(path, value);
 }
 
-float premiere_version::getParamValue(const std::string& path)
+float code_faust::getParamValue(const std::string& path)
 {
     return fUI->getParamValue(path);
 }

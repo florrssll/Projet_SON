@@ -22,8 +22,8 @@
  
  ************************************************************************/
 
-#ifndef faust_premiere_version_h_
-#define faust_premiere_version_h_
+#ifndef faust_code_faust_h_
+#define faust_code_faust_h_
 
 #include <string>
 
@@ -41,12 +41,12 @@ class MidiUI;
 class teensy_midi;
 #endif
 
-class premiere_version : public AudioStream
+class code_faust : public AudioStream
 {
     public:
     
-        premiere_version();
-        ~premiere_version();
+        code_faust();
+        ~code_faust();
     
         virtual void update(void);
     
