@@ -27,11 +27,11 @@ const char* currentFile = "piano.wav";
 // ================= SETUP =================
 void setup() {
 
-  Serial.begin(9600);   // même vitesse que Processing
+  Serial.begin(11250);   // même vitesse que Processing
   AudioMemory(60);
 
   sgtl5000.enable();
-  sgtl5000.volume(0.6);
+  sgtl5000.volume(0.5);
 
   SPI.setMOSI(11);
   SPI.setMISO(12);
@@ -62,7 +62,7 @@ void loop() {
       playWav.play(currentFile);
     }
     else if (cmd == '2') {
-      currentFile = "jazz.wav";
+      currentFile = "opera.wav";
       playWav.play(currentFile);
     }
     else if (cmd == '3') {
