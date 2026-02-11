@@ -1,5 +1,5 @@
 /* ------------------------------------------------------------
-name: "code_faust"
+name: "amelioration"
 Code generated with Faust 2.81.10 (https://faust.grame.fr)
 Compilation options: -a /usr/local/share/faust/teensy/teensy.cpp -lang cpp -i -ct 1 -es 1 -mcd 16 -mdd 1024 -mdy 33 -uim -single -ftz 0
 ------------------------------------------------------------ */
@@ -44,7 +44,7 @@ Compilation options: -a /usr/local/share/faust/teensy/teensy.cpp -lang cpp -i -c
 
 #include <string.h> // for memset
 
-#include "code_faust.h"
+#include "amelioration.h"
 
 // IMPORTANT: in order for MapUI to work, the teensy linker must be g++
 /************************** BEGIN MapUI.h ******************************
@@ -10311,6 +10311,7 @@ struct dsp_poly_factory : public dsp_factory {
 #define FAUSTFLOAT float
 #endif 
 
+/* link with : "" */
 #include <algorithm>
 #include <cmath>
 #include <cstdint>
@@ -10333,7 +10334,7 @@ struct dsp_poly_factory : public dsp_factory {
 
 struct mydspSIG0 {
 	int iVec2[2];
-	int iRec5[2];
+	int iRec2[2];
 	
 	int getNumInputsmydspSIG0() {
 		return 0;
@@ -10343,21 +10344,21 @@ struct mydspSIG0 {
 	}
 	
 	void instanceInitmydspSIG0(int sample_rate) {
-		for (int l6 = 0; l6 < 2; l6 = l6 + 1) {
-			iVec2[l6] = 0;
+		for (int l3 = 0; l3 < 2; l3 = l3 + 1) {
+			iVec2[l3] = 0;
 		}
-		for (int l7 = 0; l7 < 2; l7 = l7 + 1) {
-			iRec5[l7] = 0;
+		for (int l4 = 0; l4 < 2; l4 = l4 + 1) {
+			iRec2[l4] = 0;
 		}
 	}
 	
 	void fillmydspSIG0(int count, float* table) {
 		for (int i1 = 0; i1 < count; i1 = i1 + 1) {
 			iVec2[0] = 1;
-			iRec5[0] = (iVec2[1] + iRec5[1]) % 65536;
-			table[i1] = std::sin(9.58738e-05f * static_cast<float>(iRec5[0]));
+			iRec2[0] = (iVec2[1] + iRec2[1]) % 65536;
+			table[i1] = std::sin(9.58738e-05f * static_cast<float>(iRec2[0]));
 			iVec2[1] = iVec2[0];
-			iRec5[1] = iRec5[0];
+			iRec2[1] = iRec2[0];
 		}
 	}
 
@@ -10373,24 +10374,36 @@ static float ftbl0mydspSIG0[65536];
 
 struct mydsp : public dsp {
 	
-	FAUSTFLOAT fCheckbox0;
 	int iVec0[2];
-	int iRec1[2];
-	float fRec0[4];
+	int iRec0[2];
 	int fSampleRate;
 	float fConst0;
 	float fConst1;
 	float fConst2;
-	FAUSTFLOAT fHslider0;
-	float fRec2[2];
-	FAUSTFLOAT fHslider1;
-	float fRec3[2];
 	float fConst3;
+	float fConst4;
+	float fConst5;
 	int IOTA0;
 	float fVec1[1024];
-	float fConst4;
+	float fConst6;
+	float fRec3[2];
+	float fConst7;
+	float fRec4[2];
+	float fRec1[3];
+	float fConst8;
+	float fConst9;
+	float fConst10;
+	float fRec7[4];
+	float fVec3[2];
+	float fConst11;
+	float fConst12;
 	float fRec6[2];
-	float fRec4[3];
+	float fConst13;
+	float fConst14;
+	float fConst15;
+	float fRec5[2];
+	float fConst16;
+	float fRec8[2];
 	
 	mydsp() {
 	}
@@ -10401,10 +10414,12 @@ struct mydsp : public dsp {
 		m->declare("compile_options", "-a /usr/local/share/faust/teensy/teensy.cpp -lang cpp -i -ct 1 -es 1 -mcd 16 -mdd 1024 -mdy 33 -uim -single -ftz 0");
 		m->declare("delays.lib/name", "Faust Delay Library");
 		m->declare("delays.lib/version", "1.2.0");
-		m->declare("filename", "code_faust.dsp");
+		m->declare("filename", "amelioration.dsp");
 		m->declare("filters.lib/fir:author", "Julius O. Smith III");
 		m->declare("filters.lib/fir:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
 		m->declare("filters.lib/fir:license", "MIT-style STK-4.3 license");
+		m->declare("filters.lib/highpass:author", "Julius O. Smith III");
+		m->declare("filters.lib/highpass:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
 		m->declare("filters.lib/iir:author", "Julius O. Smith III");
 		m->declare("filters.lib/iir:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
 		m->declare("filters.lib/iir:license", "MIT-style STK-4.3 license");
@@ -10414,6 +10429,12 @@ struct mydsp : public dsp {
 		m->declare("filters.lib/lowpass:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
 		m->declare("filters.lib/lowpass:license", "MIT-style STK-4.3 license");
 		m->declare("filters.lib/name", "Faust Filters Library");
+		m->declare("filters.lib/tf1:author", "Julius O. Smith III");
+		m->declare("filters.lib/tf1:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
+		m->declare("filters.lib/tf1:license", "MIT-style STK-4.3 license");
+		m->declare("filters.lib/tf1s:author", "Julius O. Smith III");
+		m->declare("filters.lib/tf1s:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
+		m->declare("filters.lib/tf1s:license", "MIT-style STK-4.3 license");
 		m->declare("filters.lib/tf2:author", "Julius O. Smith III");
 		m->declare("filters.lib/tf2:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
 		m->declare("filters.lib/tf2:license", "MIT-style STK-4.3 license");
@@ -10426,15 +10447,13 @@ struct mydsp : public dsp {
 		m->declare("maths.lib/license", "LGPL with exception");
 		m->declare("maths.lib/name", "Faust Math Library");
 		m->declare("maths.lib/version", "2.9.0");
-		m->declare("name", "code_faust");
+		m->declare("name", "amelioration");
 		m->declare("noises.lib/name", "Faust Noise Generator Library");
 		m->declare("noises.lib/version", "1.5.0");
 		m->declare("oscillators.lib/name", "Faust Oscillator Library");
 		m->declare("oscillators.lib/version", "1.6.0");
 		m->declare("platform.lib/name", "Generic Platform Library");
 		m->declare("platform.lib/version", "1.3.0");
-		m->declare("signals.lib/name", "Faust Signal Routing Library");
-		m->declare("signals.lib/version", "1.6.0");
 	}
 
 	virtual int getNumInputs() {
@@ -10454,16 +10473,25 @@ struct mydsp : public dsp {
 	virtual void instanceConstants(int sample_rate) {
 		fSampleRate = sample_rate;
 		fConst0 = std::min<float>(1.92e+05f, std::max<float>(1.0f, static_cast<float>(fSampleRate)));
-		fConst1 = 44.1f / fConst0;
-		fConst2 = 1.0f - fConst1;
-		fConst3 = 3.1415927f / fConst0;
-		fConst4 = 0.75f / fConst0;
+		fConst1 = std::tan(43982.297f / fConst0);
+		fConst2 = 2.0f * (1.0f - 1.0f / mydsp_faustpower2_f(fConst1));
+		fConst3 = 1.0f / fConst1;
+		fConst4 = (fConst3 + -1.4142135f) / fConst1 + 1.0f;
+		fConst5 = 1.0f / ((fConst3 + 1.4142135f) / fConst1 + 1.0f);
+		fConst6 = 8.0f / fConst0;
+		fConst7 = 0.75f / fConst0;
+		fConst8 = std::tan(628.31854f / fConst0);
+		fConst9 = 1.0f / fConst8;
+		fConst10 = 1.0f - fConst9;
+		fConst11 = 0.003f / fConst8;
+		fConst12 = 1.0f / (fConst9 + 1.0f);
+		fConst13 = 1.0f / std::tan(37699.113f / fConst0);
+		fConst14 = 1.0f - fConst13;
+		fConst15 = 1.0f / (fConst13 + 1.0f);
+		fConst16 = 25.0f / fConst0;
 	}
 	
 	virtual void instanceResetUserInterface() {
-		fCheckbox0 = static_cast<FAUSTFLOAT>(0.0f);
-		fHslider0 = static_cast<FAUSTFLOAT>(0.05f);
-		fHslider1 = static_cast<FAUSTFLOAT>(1.0f);
 	}
 	
 	virtual void instanceClear() {
@@ -10471,26 +10499,35 @@ struct mydsp : public dsp {
 			iVec0[l0] = 0;
 		}
 		for (int l1 = 0; l1 < 2; l1 = l1 + 1) {
-			iRec1[l1] = 0;
-		}
-		for (int l2 = 0; l2 < 4; l2 = l2 + 1) {
-			fRec0[l2] = 0.0f;
-		}
-		for (int l3 = 0; l3 < 2; l3 = l3 + 1) {
-			fRec2[l3] = 0.0f;
-		}
-		for (int l4 = 0; l4 < 2; l4 = l4 + 1) {
-			fRec3[l4] = 0.0f;
+			iRec0[l1] = 0;
 		}
 		IOTA0 = 0;
-		for (int l5 = 0; l5 < 1024; l5 = l5 + 1) {
-			fVec1[l5] = 0.0f;
+		for (int l2 = 0; l2 < 1024; l2 = l2 + 1) {
+			fVec1[l2] = 0.0f;
 		}
-		for (int l8 = 0; l8 < 2; l8 = l8 + 1) {
-			fRec6[l8] = 0.0f;
+		for (int l5 = 0; l5 < 2; l5 = l5 + 1) {
+			fRec3[l5] = 0.0f;
 		}
-		for (int l9 = 0; l9 < 3; l9 = l9 + 1) {
-			fRec4[l9] = 0.0f;
+		for (int l6 = 0; l6 < 2; l6 = l6 + 1) {
+			fRec4[l6] = 0.0f;
+		}
+		for (int l7 = 0; l7 < 3; l7 = l7 + 1) {
+			fRec1[l7] = 0.0f;
+		}
+		for (int l8 = 0; l8 < 4; l8 = l8 + 1) {
+			fRec7[l8] = 0.0f;
+		}
+		for (int l9 = 0; l9 < 2; l9 = l9 + 1) {
+			fVec3[l9] = 0.0f;
+		}
+		for (int l10 = 0; l10 < 2; l10 = l10 + 1) {
+			fRec6[l10] = 0.0f;
+		}
+		for (int l11 = 0; l11 < 2; l11 = l11 + 1) {
+			fRec5[l11] = 0.0f;
+		}
+		for (int l12 = 0; l12 < 2; l12 = l12 + 1) {
+			fRec8[l12] = 0.0f;
 		}
 	}
 	
@@ -10514,45 +10551,46 @@ struct mydsp : public dsp {
 	}
 	
 	virtual void buildUserInterface(UI* ui_interface) {
-		ui_interface->openVerticalBox("code_faust");
-		ui_interface->addCheckButton("Bypass", &fCheckbox0);
-		ui_interface->addHorizontalSlider("Noise", &fHslider0, FAUSTFLOAT(0.05f), FAUSTFLOAT(0.0f), FAUSTFLOAT(0.3f), FAUSTFLOAT(0.01f));
-		ui_interface->addHorizontalSlider("Wear", &fHslider1, FAUSTFLOAT(1.0f), FAUSTFLOAT(0.0f), FAUSTFLOAT(1.0f), FAUSTFLOAT(0.01f));
+		ui_interface->openVerticalBox("amelioration");
 		ui_interface->closeBox();
 	}
 	
 	virtual void compute(int count, FAUSTFLOAT** RESTRICT inputs, FAUSTFLOAT** RESTRICT outputs) {
 		FAUSTFLOAT* input0 = inputs[0];
 		FAUSTFLOAT* output0 = outputs[0];
-		int iSlow0 = static_cast<int>(static_cast<float>(fCheckbox0));
-		float fSlow1 = fConst1 * static_cast<float>(fHslider0);
-		float fSlow2 = fConst1 * static_cast<float>(fHslider1);
 		for (int i0 = 0; i0 < count; i0 = i0 + 1) {
 			iVec0[0] = 1;
-			iRec1[0] = 1103515245 * iRec1[1] + 12345;
-			fRec0[0] = 0.5221894f * fRec0[3] + 4.656613e-10f * static_cast<float>(iRec1[0]) + 2.494956f * fRec0[1] - 2.0172658f * fRec0[2];
-			fRec2[0] = fSlow1 + fConst2 * fRec2[1];
-			fRec3[0] = fSlow2 + fConst2 * fRec3[1];
-			float fTemp0 = std::tan(fConst3 * (1.4e+04f * fRec3[0] + 4e+03f));
-			float fTemp1 = 1.0f / fTemp0;
-			float fTemp2 = (fTemp1 + 1.4142135f) / fTemp0 + 1.0f;
-			float fTemp3 = static_cast<float>(input0[i0]);
-			fVec1[IOTA0 & 1023] = fTemp3;
-			float fTemp4 = ((1 - iVec0[1]) ? 0.0f : fConst4 + fRec6[1]);
-			fRec6[0] = fTemp4 - std::floor(fTemp4);
-			fRec4[0] = fVec1[(IOTA0 - static_cast<int>(std::min<float>(4096.0f, std::max<float>(0.0f, 0.8f * ftbl0mydspSIG0[std::max<int>(0, std::min<int>(static_cast<int>(65536.0f * fRec6[0]), 65535))] + 1e+03f)))) & 1023] - (fRec4[2] * ((fTemp1 + -1.4142135f) / fTemp0 + 1.0f) + 2.0f * fRec4[1] * (1.0f - 1.0f / mydsp_faustpower2_f(fTemp0))) / fTemp2;
-			output0[i0] = static_cast<FAUSTFLOAT>(((iSlow0) ? fTemp3 : (fRec4[2] + fRec4[0] + 2.0f * fRec4[1]) / fTemp2 + fRec2[0] * (0.049922034f * fRec0[0] + 0.0506127f * fRec0[2] - (0.095993534f * fRec0[1] + 0.004408786f * fRec0[3]))));
+			iRec0[0] = 1103515245 * iRec0[1] + 12345;
+			float fTemp0 = 4.656613e-10f * static_cast<float>(iRec0[0]);
+			fVec1[IOTA0 & 1023] = static_cast<float>(input0[i0]);
+			int iTemp1 = 1 - iVec0[1];
+			float fTemp2 = ((iTemp1) ? 0.0f : fConst6 + fRec3[1]);
+			fRec3[0] = fTemp2 - std::floor(fTemp2);
+			float fTemp3 = ((iTemp1) ? 0.0f : fConst7 + fRec4[1]);
+			fRec4[0] = fTemp3 - std::floor(fTemp3);
+			fRec1[0] = fVec1[(IOTA0 - static_cast<int>(std::min<float>(4096.0f, std::max<float>(0.0f, 1e+03f * (0.0006f * ftbl0mydspSIG0[std::max<int>(0, std::min<int>(static_cast<int>(65536.0f * fRec4[0]), 65535))] + 0.00015f * ftbl0mydspSIG0[std::max<int>(0, std::min<int>(static_cast<int>(65536.0f * fRec3[0]), 65535))] + 1.0f))))) & 1023] - fConst5 * (fConst4 * fRec1[2] + fConst2 * fRec1[1]);
+			fRec7[0] = 0.5221894f * fRec7[3] + fTemp0 + 2.494956f * fRec7[1] - 2.0172658f * fRec7[2];
+			float fTemp4 = 0.049922034f * fRec7[0] + 0.0506127f * fRec7[2] - (0.095993534f * fRec7[1] + 0.004408786f * fRec7[3]);
+			fVec3[0] = fTemp4;
+			fRec6[0] = fConst12 * (fConst11 * (fTemp4 - fVec3[1]) - fConst10 * fRec6[1]);
+			fRec5[0] = -(fConst15 * (fConst14 * fRec5[1] - (fRec6[0] + fRec6[1])));
+			float fTemp5 = ((iTemp1) ? 0.0f : fConst16 + fRec8[1]);
+			fRec8[0] = fTemp5 - std::floor(fTemp5);
+			output0[i0] = static_cast<FAUSTFLOAT>(tanhf(1.5f * (0.002f * ftbl0mydspSIG0[std::max<int>(0, std::min<int>(static_cast<int>(65536.0f * fRec8[0]), 65535))] + fRec5[0] + fConst5 * (fRec1[2] + fRec1[0] + 2.0f * fRec1[1]) + 0.2f * static_cast<float>(std::fabs(fTemp0) > 0.995f))));
 			iVec0[1] = iVec0[0];
-			iRec1[1] = iRec1[0];
-			for (int j0 = 3; j0 > 0; j0 = j0 - 1) {
-				fRec0[j0] = fRec0[j0 - 1];
-			}
-			fRec2[1] = fRec2[0];
-			fRec3[1] = fRec3[0];
+			iRec0[1] = iRec0[0];
 			IOTA0 = IOTA0 + 1;
-			fRec6[1] = fRec6[0];
-			fRec4[2] = fRec4[1];
+			fRec3[1] = fRec3[0];
 			fRec4[1] = fRec4[0];
+			fRec1[2] = fRec1[1];
+			fRec1[1] = fRec1[0];
+			for (int j0 = 3; j0 > 0; j0 = j0 - 1) {
+				fRec7[j0] = fRec7[j0 - 1];
+			}
+			fVec3[1] = fVec3[0];
+			fRec6[1] = fRec6[0];
+			fRec5[1] = fRec5[0];
+			fRec8[1] = fRec8[0];
 		}
 	}
 
@@ -10560,22 +10598,16 @@ struct mydsp : public dsp {
 
 #ifdef FAUST_UIMACROS
 	
-	#define FAUST_FILE_NAME "code_faust.dsp"
+	#define FAUST_FILE_NAME "amelioration.dsp"
 	#define FAUST_CLASS_NAME "mydsp"
 	#define FAUST_COMPILATION_OPIONS "-a /usr/local/share/faust/teensy/teensy.cpp -lang cpp -i -ct 1 -es 1 -mcd 16 -mdd 1024 -mdy 33 -uim -single -ftz 0"
 	#define FAUST_INPUTS 1
 	#define FAUST_OUTPUTS 1
-	#define FAUST_ACTIVES 3
+	#define FAUST_ACTIVES 0
 	#define FAUST_PASSIVES 0
 
-	FAUST_ADDCHECKBOX("Bypass", fCheckbox0);
-	FAUST_ADDHORIZONTALSLIDER("Noise", fHslider0, 0.05f, 0.0f, 0.3f, 0.01f);
-	FAUST_ADDHORIZONTALSLIDER("Wear", fHslider1, 1.0f, 0.0f, 1.0f, 0.01f);
 
 	#define FAUST_LIST_ACTIVES(p) \
-		p(CHECKBOX, Bypass, "Bypass", fCheckbox0, 0.0f, 0.0f, 1.0f, 1.0f) \
-		p(HORIZONTALSLIDER, Noise, "Noise", fHslider0, 0.05f, 0.0f, 0.3f, 0.01f) \
-		p(HORIZONTALSLIDER, Wear, "Wear", fHslider1, 1.0f, 0.0f, 1.0f, 0.01f) \
 
 	#define FAUST_LIST_PASSIVES(p) \
 
@@ -10597,7 +10629,7 @@ std::list<GUI*> GUI::fGuiList;
 ztimedmap GUI::gTimedZoneMap;
 #endif
 
-code_faust::code_faust() : AudioStream(FAUST_INPUTS, new audio_block_t*[FAUST_INPUTS])
+amelioration::amelioration() : AudioStream(FAUST_INPUTS, new audio_block_t*[FAUST_INPUTS])
 {
 #ifdef NVOICES
     int nvoices = NVOICES;
@@ -10639,7 +10671,7 @@ code_faust::code_faust() : AudioStream(FAUST_INPUTS, new audio_block_t*[FAUST_IN
 #endif
 }
 
-code_faust::~code_faust()
+amelioration::~amelioration()
 {
     delete fDSP;
     delete fUI;
@@ -10658,7 +10690,7 @@ code_faust::~code_faust()
 }
 
 template <int INPUTS, int OUTPUTS>
-void code_faust::updateImp(void)
+void amelioration::updateImp(void)
 {
 #if MIDICTRL
     // Process the MIDI messages received by the Teensy
@@ -10699,14 +10731,14 @@ void code_faust::updateImp(void)
     }
 }
 
-void code_faust::update(void) { updateImp<FAUST_INPUTS, FAUST_OUTPUTS>(); }
+void amelioration::update(void) { updateImp<FAUST_INPUTS, FAUST_OUTPUTS>(); }
 
-void code_faust::setParamValue(const std::string& path, float value)
+void amelioration::setParamValue(const std::string& path, float value)
 {
     fUI->setParamValue(path, value);
 }
 
-float code_faust::getParamValue(const std::string& path)
+float amelioration::getParamValue(const std::string& path)
 {
     return fUI->getParamValue(path);
 }
