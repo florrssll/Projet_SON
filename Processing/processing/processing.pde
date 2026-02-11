@@ -18,7 +18,7 @@ void setup() {
   port = new Serial(this, Serial.list()[0], 9600);
 
   // Boutons pour choisir les musiques
-  cp5.addButton("Drums-Bass")
+  cp5.addButton("Drums")
      .setPosition(50, 50)
      .setSize(100, 40)
      .onRelease(new CallbackListener() {

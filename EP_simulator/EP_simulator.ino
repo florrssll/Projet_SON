@@ -25,7 +25,9 @@ Bounce bypassBtn(PIN_BYPASS, 10);
 bool vinylMode = true;
 bool lastButtonState = HIGH;
 
-// 
+// Variable pour mémoriser le dernier son choisi
+const char* currentFile = "piano.wav"; 
+
 #define SD_CS 10
 
 // ================= UTILITY =================
@@ -35,15 +37,13 @@ static inline float adcNorm(uint16_t v, uint16_t maxv) {
 
 // ================= SETUP =================
 void setup() {
-
   Serial.begin(115200);
-  AudioMemory(40);
+  AudioMemory(60);
 
   // Audio Shield
   sgtl5000.enable();
   sgtl5000.volume(0.7);
 
-  // SPI pins (sécurise sur Teensy 4.0)
   SPI.setMOSI(11);
   SPI.setMISO(12);
   SPI.setSCK(13);
@@ -58,8 +58,8 @@ void setup() {
 
   Serial.println("SD OK");
 
-  playWav.play("piano.wav");
-  delay(10);
+  // Initialisation
+  playWav.play(currentFile);
 
   pinMode(PIN_BYPASS, INPUT_PULLUP);
   analogReadResolution(12);
@@ -69,16 +69,31 @@ void setup() {
   faustEP.setParamValue("Bypass", 0.0f);
 }
 
-// ================= LOOP =================
+
 void loop() {
 
-  bypassBtn.update();
+  if (Serial.available() > 0) {
+    char cmd = Serial.read();
+    
+    if (cmd == '1') {
+      currentFile = "dab.wav"; 
+      playWav.play(currentFile);
+    } 
+    else if (cmd == '2') {
+      currentFile = "jazz.wav";
+      playWav.play(currentFile);
+    } 
+    else if (cmd == '3') {
+      currentFile = "piano.wav";
+      playWav.play(currentFile);
+    }
+  }
 
+  bypassBtn.update();
   const uint16_t ADC_MAX = 4095;
 
   // ----------- Toggle bouton -----------
   bool currentState = digitalRead(PIN_BYPASS);
-
   if (lastButtonState == HIGH && currentState == LOW) {
     vinylMode = !vinylMode;
   }
@@ -93,9 +108,9 @@ void loop() {
   faustEP.setParamValue("Noise", noiseVal);
   faustEP.setParamValue("Bypass", vinylMode ? 0.0f : 1.0f);
 
-  // ----------- Relancer si fini ----------
+  // ----------- MODIFICATION : Relancer le fichier actuel si fini ----------
   if (!playWav.isPlaying()) {
-    playWav.play("piano.wav");
+    playWav.play(currentFile);
     delay(10);
   }
 
