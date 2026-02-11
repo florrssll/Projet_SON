@@ -22,8 +22,8 @@
  
  ************************************************************************/
 
-#ifndef faust_LP_33_h_
-#define faust_LP_33_h_
+#ifndef faust_mode_h_
+#define faust_mode_h_
 
 #include <string>
 
@@ -41,12 +41,12 @@ class MidiUI;
 class teensy_midi;
 #endif
 
-class LP_33 : public AudioStream
+class mode : public AudioStream
 {
     public:
     
-        LP_33();
-        ~LP_33();
+        mode();
+        ~mode();
     
         virtual void update(void);
     
