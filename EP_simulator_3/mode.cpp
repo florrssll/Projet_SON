@@ -1,5 +1,5 @@
 /* ------------------------------------------------------------
-name: "EP_45"
+name: "mode"
 Code generated with Faust 2.81.10 (https://faust.grame.fr)
 Compilation options: -a /usr/local/share/faust/teensy/teensy.cpp -lang cpp -i -ct 1 -es 1 -mcd 16 -mdd 1024 -mdy 33 -uim -single -ftz 0
 ------------------------------------------------------------ */
@@ -44,7 +44,7 @@ Compilation options: -a /usr/local/share/faust/teensy/teensy.cpp -lang cpp -i -c
 
 #include <string.h> // for memset
 
-#include "EP_45.h"
+#include "mode.h"
 
 // IMPORTANT: in order for MapUI to work, the teensy linker must be g++
 /************************** BEGIN MapUI.h ******************************
@@ -10333,7 +10333,7 @@ struct dsp_poly_factory : public dsp_factory {
 #endif
 
 struct mydspSIG0 {
-	int iVec2[2];
+	int iVec1[2];
 	int iRec1[2];
 	
 	int getNumInputsmydspSIG0() {
@@ -10345,7 +10345,7 @@ struct mydspSIG0 {
 	
 	void instanceInitmydspSIG0(int sample_rate) {
 		for (int l2 = 0; l2 < 2; l2 = l2 + 1) {
-			iVec2[l2] = 0;
+			iVec1[l2] = 0;
 		}
 		for (int l3 = 0; l3 < 2; l3 = l3 + 1) {
 			iRec1[l3] = 0;
@@ -10354,10 +10354,10 @@ struct mydspSIG0 {
 	
 	void fillmydspSIG0(int count, float* table) {
 		for (int i1 = 0; i1 < count; i1 = i1 + 1) {
-			iVec2[0] = 1;
-			iRec1[0] = (iVec2[1] + iRec1[1]) % 65536;
+			iVec1[0] = 1;
+			iRec1[0] = (iVec1[1] + iRec1[1]) % 65536;
 			table[i1] = std::sin(9.58738e-05f * static_cast<float>(iRec1[0]));
-			iVec2[1] = iVec2[0];
+			iVec1[1] = iVec1[0];
 			iRec1[1] = iRec1[0];
 		}
 	}
@@ -10367,43 +10367,38 @@ struct mydspSIG0 {
 static mydspSIG0* newmydspSIG0() { return (mydspSIG0*)new mydspSIG0(); }
 static void deletemydspSIG0(mydspSIG0* dsp) { delete dsp; }
 
+static float ftbl0mydspSIG0[65536];
 static float mydsp_faustpower2_f(float value) {
 	return value * value;
 }
-static float ftbl0mydspSIG0[65536];
 
 struct mydsp : public dsp {
 	
 	int iVec0[2];
+	int iRec0[2];
 	int fSampleRate;
 	float fConst0;
 	float fConst1;
+	float fRec2[2];
 	float fConst2;
 	float fConst3;
+	float fRec5[4];
+	float fVec2[2];
 	float fConst4;
+	float fRec4[2];
 	float fConst5;
-	int IOTA0;
-	float fVec1[1024];
 	float fConst6;
-	float fRec2[2];
 	float fConst7;
 	float fRec3[2];
-	float fRec0[3];
+	FAUSTFLOAT fHslider0;
 	float fConst8;
+	int IOTA0;
+	float fVec3[1024];
 	float fConst9;
+	float fRec7[2];
 	float fConst10;
-	int iRec7[2];
-	float fRec6[4];
-	float fVec3[2];
-	float fConst11;
-	float fConst12;
-	float fRec5[2];
-	float fConst13;
-	float fConst14;
-	float fConst15;
-	float fRec4[2];
-	float fConst16;
 	float fRec8[2];
+	float fRec6[3];
 	
 	mydsp() {
 	}
@@ -10414,7 +10409,7 @@ struct mydsp : public dsp {
 		m->declare("compile_options", "-a /usr/local/share/faust/teensy/teensy.cpp -lang cpp -i -ct 1 -es 1 -mcd 16 -mdd 1024 -mdy 33 -uim -single -ftz 0");
 		m->declare("delays.lib/name", "Faust Delay Library");
 		m->declare("delays.lib/version", "1.2.0");
-		m->declare("filename", "EP_45.dsp");
+		m->declare("filename", "mode.dsp");
 		m->declare("filters.lib/fir:author", "Julius O. Smith III");
 		m->declare("filters.lib/fir:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
 		m->declare("filters.lib/fir:license", "MIT-style STK-4.3 license");
@@ -10447,7 +10442,7 @@ struct mydsp : public dsp {
 		m->declare("maths.lib/license", "LGPL with exception");
 		m->declare("maths.lib/name", "Faust Math Library");
 		m->declare("maths.lib/version", "2.9.0");
-		m->declare("name", "EP_45");
+		m->declare("name", "mode");
 		m->declare("noises.lib/name", "Faust Noise Generator Library");
 		m->declare("noises.lib/version", "1.5.0");
 		m->declare("oscillators.lib/name", "Faust Oscillator Library");
@@ -10473,61 +10468,56 @@ struct mydsp : public dsp {
 	virtual void instanceConstants(int sample_rate) {
 		fSampleRate = sample_rate;
 		fConst0 = std::min<float>(1.92e+05f, std::max<float>(1.0f, static_cast<float>(fSampleRate)));
-		fConst1 = std::tan(48694.688f / fConst0);
-		fConst2 = 2.0f * (1.0f - 1.0f / mydsp_faustpower2_f(fConst1));
-		fConst3 = 1.0f / fConst1;
-		fConst4 = (fConst3 + -1.4142135f) / fConst1 + 1.0f;
-		fConst5 = 1.0f / ((fConst3 + 1.4142135f) / fConst1 + 1.0f);
-		fConst6 = 8.0f / fConst0;
-		fConst7 = 0.75f / fConst0;
-		fConst8 = std::tan(628.31854f / fConst0);
-		fConst9 = 1.0f / fConst8;
-		fConst10 = 1.0f - fConst9;
-		fConst11 = 0.003f / fConst8;
-		fConst12 = 1.0f / (fConst9 + 1.0f);
-		fConst13 = 1.0f / std::tan(37699.113f / fConst0);
-		fConst14 = 1.0f - fConst13;
-		fConst15 = 1.0f / (fConst13 + 1.0f);
-		fConst16 = 25.0f / fConst0;
+		fConst1 = 28.0f / fConst0;
+		fConst2 = 1.0f / std::tan(25132.742f / fConst0);
+		fConst3 = 1.0f - fConst2;
+		fConst4 = 1.0f / (fConst2 + 1.0f);
+		fConst5 = 1.0f / std::tan(942.4778f / fConst0);
+		fConst6 = 1.0f - fConst5;
+		fConst7 = 1.0f / (fConst5 + 1.0f);
+		fConst8 = 3.1415927f / fConst0;
+		fConst9 = 12.0f / fConst0;
+		fConst10 = 1.0f / fConst0;
 	}
 	
 	virtual void instanceResetUserInterface() {
+		fHslider0 = static_cast<FAUSTFLOAT>(0.0f);
 	}
 	
 	virtual void instanceClear() {
 		for (int l0 = 0; l0 < 2; l0 = l0 + 1) {
 			iVec0[l0] = 0;
 		}
-		IOTA0 = 0;
-		for (int l1 = 0; l1 < 1024; l1 = l1 + 1) {
-			fVec1[l1] = 0.0f;
+		for (int l1 = 0; l1 < 2; l1 = l1 + 1) {
+			iRec0[l1] = 0;
 		}
 		for (int l4 = 0; l4 < 2; l4 = l4 + 1) {
 			fRec2[l4] = 0.0f;
 		}
-		for (int l5 = 0; l5 < 2; l5 = l5 + 1) {
-			fRec3[l5] = 0.0f;
+		for (int l5 = 0; l5 < 4; l5 = l5 + 1) {
+			fRec5[l5] = 0.0f;
 		}
-		for (int l6 = 0; l6 < 3; l6 = l6 + 1) {
-			fRec0[l6] = 0.0f;
+		for (int l6 = 0; l6 < 2; l6 = l6 + 1) {
+			fVec2[l6] = 0.0f;
 		}
 		for (int l7 = 0; l7 < 2; l7 = l7 + 1) {
-			iRec7[l7] = 0;
+			fRec4[l7] = 0.0f;
 		}
-		for (int l8 = 0; l8 < 4; l8 = l8 + 1) {
-			fRec6[l8] = 0.0f;
+		for (int l8 = 0; l8 < 2; l8 = l8 + 1) {
+			fRec3[l8] = 0.0f;
 		}
-		for (int l9 = 0; l9 < 2; l9 = l9 + 1) {
+		IOTA0 = 0;
+		for (int l9 = 0; l9 < 1024; l9 = l9 + 1) {
 			fVec3[l9] = 0.0f;
 		}
 		for (int l10 = 0; l10 < 2; l10 = l10 + 1) {
-			fRec5[l10] = 0.0f;
+			fRec7[l10] = 0.0f;
 		}
 		for (int l11 = 0; l11 < 2; l11 = l11 + 1) {
-			fRec4[l11] = 0.0f;
+			fRec8[l11] = 0.0f;
 		}
-		for (int l12 = 0; l12 < 2; l12 = l12 + 1) {
-			fRec8[l12] = 0.0f;
+		for (int l12 = 0; l12 < 3; l12 = l12 + 1) {
+			fRec6[l12] = 0.0f;
 		}
 	}
 	
@@ -10551,45 +10541,62 @@ struct mydsp : public dsp {
 	}
 	
 	virtual void buildUserInterface(UI* ui_interface) {
-		ui_interface->openVerticalBox("EP_45");
+		ui_interface->openVerticalBox("mode");
+		ui_interface->addHorizontalSlider("mode", &fHslider0, FAUSTFLOAT(0.0f), FAUSTFLOAT(0.0f), FAUSTFLOAT(2.0f), FAUSTFLOAT(1.0f));
 		ui_interface->closeBox();
 	}
 	
 	virtual void compute(int count, FAUSTFLOAT** RESTRICT inputs, FAUSTFLOAT** RESTRICT outputs) {
 		FAUSTFLOAT* input0 = inputs[0];
 		FAUSTFLOAT* output0 = outputs[0];
+		float fSlow0 = static_cast<float>(fHslider0);
+		float fSlow1 = static_cast<float>(fSlow0 > 0.0f);
+		int iSlow2 = static_cast<int>(fSlow0);
+		int iSlow3 = iSlow2 >= 2;
+		int iSlow4 = iSlow2 >= 1;
+		float fSlow5 = std::tan(fConst8 * static_cast<float>(((iSlow3) ? 9000 : ((iSlow4) ? 16000 : 20000))));
+		float fSlow6 = 1.0f / fSlow5;
+		float fSlow7 = (fSlow6 + 1.4142135f) / fSlow5 + 1.0f;
+		float fSlow8 = 1.0f - 1.0f / mydsp_faustpower2_f(fSlow5);
+		float fSlow9 = (fSlow6 + -1.4142135f) / fSlow5 + 1.0f;
+		float fSlow10 = fConst10 * ((iSlow3) ? 0.55f : 0.75f);
+		float fSlow11 = ((iSlow3) ? 0.0012f : ((iSlow4) ? 0.0006f : 0.0f));
+		float fSlow12 = static_cast<float>(fSlow0 == 2.0f) + static_cast<float>(fSlow0 == 1.0f);
+		float fSlow13 = static_cast<float>(fSlow0 == 0.0f);
 		for (int i0 = 0; i0 < count; i0 = i0 + 1) {
 			iVec0[0] = 1;
-			fVec1[IOTA0 & 1023] = static_cast<float>(input0[i0]);
-			int iTemp0 = 1 - iVec0[1];
-			float fTemp1 = ((iTemp0) ? 0.0f : fConst6 + fRec2[1]);
-			fRec2[0] = fTemp1 - std::floor(fTemp1);
-			float fTemp2 = ((iTemp0) ? 0.0f : fConst7 + fRec3[1]);
-			fRec3[0] = fTemp2 - std::floor(fTemp2);
-			fRec0[0] = fVec1[(IOTA0 - static_cast<int>(std::min<float>(4096.0f, std::max<float>(0.0f, 1e+03f * (0.00045f * ftbl0mydspSIG0[std::max<int>(0, std::min<int>(static_cast<int>(65536.0f * fRec3[0]), 65535))] + 0.0001f * ftbl0mydspSIG0[std::max<int>(0, std::min<int>(static_cast<int>(65536.0f * fRec2[0]), 65535))] + 1.0f))))) & 1023] - fConst5 * (fConst4 * fRec0[2] + fConst2 * fRec0[1]);
-			iRec7[0] = 1103515245 * iRec7[1] + 12345;
-			fRec6[0] = 0.5221894f * fRec6[3] + 4.656613e-10f * static_cast<float>(iRec7[0]) + 2.494956f * fRec6[1] - 2.0172658f * fRec6[2];
-			float fTemp3 = 0.049922034f * fRec6[0] + 0.0506127f * fRec6[2] - (0.095993534f * fRec6[1] + 0.004408786f * fRec6[3]);
-			fVec3[0] = fTemp3;
-			fRec5[0] = fConst12 * (fConst11 * (fTemp3 - fVec3[1]) - fConst10 * fRec5[1]);
-			fRec4[0] = -(fConst15 * (fConst14 * fRec4[1] - (fRec5[0] + fRec5[1])));
-			float fTemp4 = ((iTemp0) ? 0.0f : fConst16 + fRec8[1]);
-			fRec8[0] = fTemp4 - std::floor(fTemp4);
-			output0[i0] = static_cast<FAUSTFLOAT>(tanhf(0.935f * (0.0015f * ftbl0mydspSIG0[std::max<int>(0, std::min<int>(static_cast<int>(65536.0f * fRec8[0]), 65535))] + fRec4[0] + fConst5 * (fRec0[2] + fRec0[0] + 2.0f * fRec0[1]))));
+			iRec0[0] = 1103515245 * iRec0[1] + 12345;
+			float fTemp0 = 4.656613e-10f * static_cast<float>(iRec0[0]);
+			int iTemp1 = 1 - iVec0[1];
+			float fTemp2 = ((iTemp1) ? 0.0f : fConst1 + fRec2[1]);
+			fRec2[0] = fTemp2 - std::floor(fTemp2);
+			fRec5[0] = 0.5221894f * fRec5[3] + fTemp0 + 2.494956f * fRec5[1] - 2.0172658f * fRec5[2];
+			float fTemp3 = 0.049922034f * fRec5[0] + 0.0506127f * fRec5[2] - (0.095993534f * fRec5[1] + 0.004408786f * fRec5[3]);
+			fVec2[0] = fTemp3;
+			fRec4[0] = fConst4 * (0.0015f * (fTemp3 + fVec2[1]) - fConst3 * fRec4[1]);
+			fRec3[0] = -(fConst7 * (fConst6 * fRec3[1] - fConst5 * (fRec4[0] - fRec4[1])));
+			float fTemp4 = static_cast<float>(input0[i0]);
+			fVec3[IOTA0 & 1023] = fTemp4;
+			float fTemp5 = ((iTemp1) ? 0.0f : fConst9 + fRec7[1]);
+			fRec7[0] = fTemp5 - std::floor(fTemp5);
+			float fTemp6 = ((iTemp1) ? 0.0f : fRec8[1] + fSlow10);
+			fRec8[0] = fTemp6 - std::floor(fTemp6);
+			fRec6[0] = fVec3[(IOTA0 - static_cast<int>(std::min<float>(4096.0f, std::max<float>(0.0f, 1.5e+03f * fSlow11 * (ftbl0mydspSIG0[std::max<int>(0, std::min<int>(static_cast<int>(65536.0f * fRec8[0]), 65535))] + 0.2f * ftbl0mydspSIG0[std::max<int>(0, std::min<int>(static_cast<int>(65536.0f * fRec7[0]), 65535))]) + 1e+03f)))) & 1023] - (fRec6[2] * fSlow9 + 2.0f * fRec6[1] * fSlow8) / fSlow7;
+			output0[i0] = static_cast<FAUSTFLOAT>(fSlow13 * fTemp4 + fSlow12 * tanhf(1.1f * ((fRec6[2] + fRec6[0] + 2.0f * fRec6[1]) / fSlow7 + fSlow1 * (fRec3[0] + 0.008f * ftbl0mydspSIG0[std::max<int>(0, std::min<int>(static_cast<int>(65536.0f * fRec2[0]), 65535))] + 0.15f * static_cast<float>(std::fabs(fTemp0) > 0.9995f)))));
 			iVec0[1] = iVec0[0];
-			IOTA0 = IOTA0 + 1;
+			iRec0[1] = iRec0[0];
 			fRec2[1] = fRec2[0];
-			fRec3[1] = fRec3[0];
-			fRec0[2] = fRec0[1];
-			fRec0[1] = fRec0[0];
-			iRec7[1] = iRec7[0];
 			for (int j0 = 3; j0 > 0; j0 = j0 - 1) {
-				fRec6[j0] = fRec6[j0 - 1];
+				fRec5[j0] = fRec5[j0 - 1];
 			}
-			fVec3[1] = fVec3[0];
-			fRec5[1] = fRec5[0];
+			fVec2[1] = fVec2[0];
 			fRec4[1] = fRec4[0];
+			fRec3[1] = fRec3[0];
+			IOTA0 = IOTA0 + 1;
+			fRec7[1] = fRec7[0];
 			fRec8[1] = fRec8[0];
+			fRec6[2] = fRec6[1];
+			fRec6[1] = fRec6[0];
 		}
 	}
 
@@ -10597,16 +10604,18 @@ struct mydsp : public dsp {
 
 #ifdef FAUST_UIMACROS
 	
-	#define FAUST_FILE_NAME "EP_45.dsp"
+	#define FAUST_FILE_NAME "mode.dsp"
 	#define FAUST_CLASS_NAME "mydsp"
 	#define FAUST_COMPILATION_OPIONS "-a /usr/local/share/faust/teensy/teensy.cpp -lang cpp -i -ct 1 -es 1 -mcd 16 -mdd 1024 -mdy 33 -uim -single -ftz 0"
 	#define FAUST_INPUTS 1
 	#define FAUST_OUTPUTS 1
-	#define FAUST_ACTIVES 0
+	#define FAUST_ACTIVES 1
 	#define FAUST_PASSIVES 0
 
+	FAUST_ADDHORIZONTALSLIDER("mode", fHslider0, 0.0f, 0.0f, 2.0f, 1.0f);
 
 	#define FAUST_LIST_ACTIVES(p) \
+		p(HORIZONTALSLIDER, mode, "mode", fHslider0, 0.0f, 0.0f, 2.0f, 1.0f) \
 
 	#define FAUST_LIST_PASSIVES(p) \
 
@@ -10628,7 +10637,7 @@ std::list<GUI*> GUI::fGuiList;
 ztimedmap GUI::gTimedZoneMap;
 #endif
 
-EP_45::EP_45() : AudioStream(FAUST_INPUTS, new audio_block_t*[FAUST_INPUTS])
+mode::mode() : AudioStream(FAUST_INPUTS, new audio_block_t*[FAUST_INPUTS])
 {
 #ifdef NVOICES
     int nvoices = NVOICES;
@@ -10670,7 +10679,7 @@ EP_45::EP_45() : AudioStream(FAUST_INPUTS, new audio_block_t*[FAUST_INPUTS])
 #endif
 }
 
-EP_45::~EP_45()
+mode::~mode()
 {
     delete fDSP;
     delete fUI;
@@ -10689,7 +10698,7 @@ EP_45::~EP_45()
 }
 
 template <int INPUTS, int OUTPUTS>
-void EP_45::updateImp(void)
+void mode::updateImp(void)
 {
 #if MIDICTRL
     // Process the MIDI messages received by the Teensy
@@ -10730,14 +10739,14 @@ void EP_45::updateImp(void)
     }
 }
 
-void EP_45::update(void) { updateImp<FAUST_INPUTS, FAUST_OUTPUTS>(); }
+void mode::update(void) { updateImp<FAUST_INPUTS, FAUST_OUTPUTS>(); }
 
-void EP_45::setParamValue(const std::string& path, float value)
+void mode::setParamValue(const std::string& path, float value)
 {
     fUI->setParamValue(path, value);
 }
 
-float EP_45::getParamValue(const std::string& path)
+float mode::getParamValue(const std::string& path)
 {
     return fUI->getParamValue(path);
 }
