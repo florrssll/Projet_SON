@@ -46,7 +46,6 @@ void setup() {
      });
 
   cp5.addButton("Piano")
-     .setPosition(width/2 + 150, height/2)
      .setSize(100, 40)
      .setPosition(width/2 - btnW/2 + btnW + espacement, height/2 - btnH/2)
      .setColorBackground(color(0, 45, 90)) // Couleur du bouton au repos
@@ -55,6 +54,43 @@ void setup() {
      .onRelease(new CallbackListener() {
        public void controlEvent(CallbackEvent theEvent) {
          port.write('3'); // Envoie '3' pour "Piano"
+       }
+     });
+
+  cp5.addButton("EP")
+     .setSize(100, 40)
+     .setPosition(width/2 - btnW/2 - espacement - btnW, height/2+ 40)
+     .setColorBackground(color(0, 45, 90)) // Couleur du bouton au repos
+     .setColorForeground(color(0, 116, 217)) // Couleur quand la souris passe dessus
+     .setColorActive(color(255, 128, 0))
+     .onRelease(new CallbackListener() {
+       public void controlEvent(CallbackEvent theEvent) {
+         port.write('4'); // Envoie '4' pour "Mode Vinyl"
+       }
+     });
+
+  cp5.addButton("LP")
+     .setSize(100, 40)
+     .setPosition(width/2 - btnW/2, height/2+40)
+     .setColorBackground(color(0, 45, 90)) // Couleur du bouton au repos
+     .setColorForeground(color(0, 116, 217)) // Couleur quand la souris passe dessus
+     .setColorActive(color(255, 128, 0))
+     .onRelease(new CallbackListener() {
+       public void controlEvent(CallbackEvent theEvent) {
+         port.write('5'); // Envoie '5' pour "Mode LP"
+       }
+     });
+     
+  cp5.addButton("Digital")
+     .setPosition(width/2 + 150, height/2+50)
+     .setSize(100, 40)
+     .setPosition(width/2 - btnW/2 + btnW + espacement, height/2+40)
+     .setColorBackground(color(0, 45, 90)) // Couleur du bouton au repos
+     .setColorForeground(color(0, 116, 217)) // Couleur quand la souris passe dessus
+     .setColorActive(color(255, 128, 0))
+     .onRelease(new CallbackListener() {
+       public void controlEvent(CallbackEvent theEvent) {
+         port.write('6'); // Envoie '6' pour "Digital"
        }
      });
 }
