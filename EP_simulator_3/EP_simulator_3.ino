@@ -3,46 +3,46 @@
 #include <SPI.h>
 #include <SD.h>
 #include <SerialFlash.h>
-#include <Bounce.h>
 
 #include "EP_45.h"
 #include "LP_33.h"
 
 // ================= CONFIG =================
 #define SD_CS 10
-#define PIN_BYPASS 0
 
 // ================= AUDIO OBJECTS =================
 AudioPlaySdWav       playWav;
-amelioration         faustEP;
+EP_45                ep45;
+LP_33                lp33;
 AudioMixer4          modeMixer;
 AudioOutputI2S       i2sOut;
 AudioControlSGTL5000 sgtl5000;
 
 // ================= CONNECTIONS =================
-// Digital path
+
+// Digital
 AudioConnection patch1(playWav, 0, modeMixer, 0);
 
-// Vinyl path
-AudioConnection patch2(playWav, 0, faustEP, 0);
-AudioConnection patch3(faustEP, 0, modeMixer, 1);
+// EP
+AudioConnection patch2(playWav, 0, ep45, 0);
+AudioConnection patch3(ep45, 0, modeMixer, 1);
+
+// LP
+AudioConnection patch4(playWav, 0, lp33, 0);
+AudioConnection patch5(lp33, 0, modeMixer, 2);
 
 // Output
-AudioConnection patch4(modeMixer, 0, i2sOut, 0);
-AudioConnection patch5(modeMixer, 0, i2sOut, 1);
+AudioConnection patch6(modeMixer, 0, i2sOut, 0);
+AudioConnection patch7(modeMixer, 0, i2sOut, 1);
 
 // ================= VARIABLES =================
-Bounce bypassBtn(PIN_BYPASS, 10);
-bool vinylMode = true;
-bool lastButtonState = HIGH;
-
 const char* currentFile = "piano.wav";
 
 // ================= SETUP =================
 void setup() {
 
-  Serial.begin(115200);   
-  AudioMemory(60);
+  Serial.begin(9600);   // même vitesse que Processing
+  AudioMemory(80);
 
   sgtl5000.enable();
   sgtl5000.volume(0.7);
@@ -60,20 +60,19 @@ void setup() {
 
   Serial.println("SD OK");
 
-  pinMode(PIN_BYPASS, INPUT_PULLUP);
-
-  // Mode initial = VINYL
-  modeMixer.gain(0, 0); // digital OFF
-  modeMixer.gain(1, 1); // vinyl ON
+  // Mode initial = DIGITAL
+  modeMixer.gain(0, 1); // digital
+  modeMixer.gain(1, 0); // EP
+  modeMixer.gain(2, 0); // LP
 }
 
 // ================= LOOP =================
 void loop() {
 
-  // ----------- COMMANDE DEPUIS PROCESSING -----------
   if (Serial.available() > 0) {
     char cmd = Serial.read();
 
+    // ----------- CHOIX MUSIQUE -----------
     if (cmd == '1') {
       currentFile = "dab.wav";
       playWav.play(currentFile);
@@ -86,24 +85,31 @@ void loop() {
       currentFile = "piano.wav";
       playWav.play(currentFile);
     }
-  }
 
-  // ----------- TOGGLE BOUTON PHYSIQUE -----------
-  bypassBtn.update();
-  bool currentState = digitalRead(PIN_BYPASS);
-
-  if (lastButtonState == HIGH && currentState == LOW) {
-    vinylMode = !vinylMode;
-
-    if (vinylMode) {
-      modeMixer.gain(0, 0); // digital OFF
-      modeMixer.gain(1, 1); // vinyl ON
-    } else {
-      modeMixer.gain(0, 1); // digital ON
-      modeMixer.gain(1, 0); // vinyl OFF
-
+    // ----------- CHOIX MODE -----------
+    else if (cmd == '4') { // EP
+      modeMixer.gain(0, 0);
+      modeMixer.gain(1, 1);
+      modeMixer.gain(2, 0);
+      Serial.println("Mode: EP 45");
+    }
+    else if (cmd == '5') { // LP
+      modeMixer.gain(0, 0);
+      modeMixer.gain(1, 0);
+      modeMixer.gain(2, 1);
+      Serial.println("Mode: LP 33");
+    }
+    else if (cmd == '6') { // DIGITAL
+      modeMixer.gain(0, 1);
+      modeMixer.gain(1, 0);
+      modeMixer.gain(2, 0);
+      Serial.println("Mode: DIGITAL");
     }
   }
 
-  lastButtonState = currentState;
+  // Relancer si fini
+  if (!playWav.isPlaying()) {
+    playWav.play(currentFile);
+    delay(10);
+  }
 }
